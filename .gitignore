@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Per-developer Claude Code settings (the shared settings.json IS tracked)
+.claude/settings.local.json
+
+# Runtime output of pr-review-intake — excluded so that if this repo is
+# itself ever a project under review, we don't commit the runtime artifact.
+/docs/pr/

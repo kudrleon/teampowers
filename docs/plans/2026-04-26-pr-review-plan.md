@@ -155,6 +155,7 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
+*.egg-info/
 
 # macOS
 .DS_Store
@@ -169,9 +170,13 @@ venv/
 
 Notes for the implementer:
 
-- We deliberately do NOT add `.ruff_cache/`, `.mypy_cache/`, or
-  `*.egg-info/` — this plan does not introduce ruff, mypy, or
-  packaging. Add them in a future PR if those tools land.
+- We deliberately do NOT add `.ruff_cache/` or `.mypy_cache/` — this plan
+  does not introduce ruff or mypy. Add them in a future PR if those tools
+  land.
+- `*.egg-info/` IS in the ignore list because Task 1.3 runs
+  `pip install -e .`, which creates `teampowers_dev.egg-info/` even for
+  non-packaged dev tooling. (An earlier draft of this plan omitted it on
+  YAGNI grounds; reality intervened.)
 - `.claude/settings.json` (the shared one) is tracked. Only the
   `*.local.json` per-developer override is ignored.
 - Plugin distribution does not consult `.gitignore` — Claude Code

@@ -149,19 +149,34 @@ Expected: dry-run succeeds. (Actual install happens in Phase 1.)
 - [ ] **Step 1: Write `.gitignore`**
 
 ```gitignore
+# Python
 __pycache__/
 *.pyc
-.DS_Store
 .venv/
 venv/
 .pytest_cache/
-.ruff_cache/
-.mypy_cache/
-*.egg-info/
+
+# macOS
+.DS_Store
+
+# Per-developer Claude Code settings (the shared settings.json IS tracked)
+.claude/settings.local.json
+
+# Runtime output of pr-review-intake — excluded so that if this repo is
+# itself ever a project under review, we don't commit the runtime artifact.
 /docs/pr/
 ```
 
-(Note: `/docs/pr/` is the runtime output path that `pr-review-intake` writes. Excluded so that if the plugin's own repo is itself ever a project under review, we don't accidentally commit the runtime artifact.)
+Notes for the implementer:
+
+- We deliberately do NOT add `.ruff_cache/`, `.mypy_cache/`, or
+  `*.egg-info/` — this plan does not introduce ruff, mypy, or
+  packaging. Add them in a future PR if those tools land.
+- `.claude/settings.json` (the shared one) is tracked. Only the
+  `*.local.json` per-developer override is ignored.
+- Plugin distribution does not consult `.gitignore` — Claude Code
+  clones the whole repo at install time. `.gitignore` only matters for
+  development hygiene in this repo.
 
 - [ ] **Step 2: Verify nothing previously-tracked is now ignored**
 

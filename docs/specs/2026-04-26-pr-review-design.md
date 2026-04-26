@@ -171,10 +171,14 @@ verify scripts — only a new `fetch_<provider>.py` and (eventually)
 
 ### 2.5 Tight trigger discipline
 
-Skill descriptions explicitly say "Trigger ONLY on explicit invocation."
-The plugin should not fire on general talk about PRs, reviews, or comments.
-Explicit slash-command invocation, by-name reference, or a clear specific
-instruction are the only triggers.
+Skill `description` frontmatter follows the `superpowers:writing-skills`
+"Use when…" convention: it names triggering conditions only and does
+NOT summarize the workflow. Both skills' descriptions explicitly say
+"Do NOT trigger on general talk about PRs, reviews, or comments" (or
+the equivalent "Do NOT trigger automatically after implementing a
+fix" for `pr-review-update`). Explicit slash-command invocation,
+by-name reference, or a clear specific instruction are the only
+triggers.
 
 This is deliberate: a skill that fires too eagerly becomes noise, and once
 the user starts ignoring its suggestions, the trust is gone.
@@ -400,18 +404,14 @@ does not auto-invoke any downstream skill.**
 ```yaml
 ---
 name: pr-review-intake
-description: Pull active review threads for the current branch's PR and prepare
-  them for handoff to superpowers. Trigger ONLY when the user explicitly invokes
-  it — by slash command (/pr-review-intake), by name ("run pr-review-intake",
-  "use teampowers pr-review-intake"), or by a clear and specific instruction to
-  fetch the current PR's review comments ("pull the open review threads from
-  Azure DevOps for this branch"). Do NOT auto-trigger on general talk about
-  PRs, reviews, or comments — even if it sounds related. If the user is
-  discussing review feedback abstractly, ask whether they want to run the skill
-  before invoking it. Supports Azure DevOps fully and GitHub read-only in v1;
-  if the provider is unsupported, say so and stop.
+description: Use when the user explicitly invokes /pr-review-intake, asks the skill by name, or gives a clear and specific instruction to fetch the current PR's open review comments (e.g. "pull the open review threads for this branch", "show me unaddressed AzDO review comments"). Do NOT trigger on general talk about PRs, reviews, or comments. Supports Azure DevOps fully and GitHub read-only in v1.
 ---
 ```
+
+The `description` follows the `superpowers:writing-skills` convention:
+"Use when…" + triggering conditions only, no workflow summary. The full
+trigger discipline (don't auto-trigger on abstract talk; ask first if
+unsure) is repeated in the SKILL body, not the frontmatter.
 
 ### 5.3 Process flow
 
@@ -558,17 +558,13 @@ status. Verify real git evidence before posting `--action pending`.
 ```yaml
 ---
 name: pr-review-update
-description: Mark a single PR review thread as pending after the agent has
-  addressed it in code, OR mark it won't-fix with reasoning, OR post a
-  reply-only without status change. Trigger ONLY on explicit invocation —
-  slash command (/pr-review-update), by name, or a clear specific instruction
-  ("mark thread azdo:9876 as pending", "post my fix for thread X", "mark
-  thread Y won't-fix"). Do NOT auto-trigger when the agent finishes
-  implementing a fix; wait for the user (or the agent acting on prior user
-  instruction) to ask. Verifies real git evidence before posting --action
-  pending. Supports Azure DevOps in v1; GitHub write-side is deferred to v1.1.
+description: Use when the user explicitly invokes /pr-review-update or names a specific PR review thread to update (e.g. "mark thread azdo:9876 as pending", "post my fix for thread X", "mark thread Y won't-fix"). Do NOT trigger automatically after implementing a fix — wait for an explicit ask. Azure DevOps in v1; GitHub write-side deferred.
 ---
 ```
+
+Same `superpowers:writing-skills` convention as §5.2. The "do not
+auto-trigger after a fix" rule is in the description because it's a
+*triggering* concern (when NOT to fire), not a workflow concern.
 
 ### 6.3 Invocation contract
 
@@ -863,7 +859,7 @@ End-to-end automated tests against a live PR are **out of scope** for v1
 
 | Risk | Mitigation |
 |---|---|
-| Skill triggers on general talk about reviews. | Tightened description in SKILL.md frontmatter: "Trigger ONLY on explicit invocation." Same for both skills. |
+| Skill triggers on general talk about reviews. | SKILL.md `description` frontmatter follows the `superpowers:writing-skills` "Use when…" convention — triggering conditions only, with explicit "Do NOT trigger on …" clauses. Same for both skills. |
 | `pending` flag becomes meaningless ("Claude said done"). | Hard-gated on `git_evidence_file_unchanged` for `--action pending`. Three explicit `--action` values mean non-fixes can't masquerade as pending. |
 | Agent fabricates a commit SHA in `--commits`. | `verify_git_evidence.py` checks that the SHA exists and that it actually touched the file. Bogus SHAs hit `git_evidence_file_unchanged` or fail to resolve. |
 | AzDO API surface drifts between API versions. | Pin `api-version=7.1`. Document the pin. Bumps are deliberate code changes. |

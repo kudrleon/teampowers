@@ -85,6 +85,35 @@ This locks decomposition decisions before tasks begin. Each file has one respons
 
 ## Phase 0 — pre-flight
 
+### Cross-cutting note for implementer subagents — `superpowers:writing-skills`
+
+Tasks that create or edit `SKILL.md` (Tasks 6.6, 8.4) or any
+`references/*.md` file (Tasks 2.4, 6.3, 6.4, 6.5, 7.3, 8.3) MUST
+invoke `superpowers:writing-skills` BEFORE writing the file.
+
+The plan's drafted text already follows the conventions described
+there:
+
+- Frontmatter `description` starts with `Use when…`, names triggering
+  conditions only, and DOES NOT summarize the workflow.
+- Workflow content (the 6-step / 5-step process, constraints, hard
+  rules) lives in the SKILL body, not the frontmatter.
+- Reference docs are kept in `references/` per the spec layout — even
+  though some are short, the spec's `§3.1` layout treats them as the
+  contract surface for forward-compat (`adding-providers.md` etc.).
+
+If the implementer subagent finds a real conflict between the plan's
+drafted SKILL/reference text and `superpowers:writing-skills`
+guidance, they should follow `writing-skills` AND raise a
+DONE_WITH_CONCERNS at the end so the discrepancy gets back into the
+spec.
+
+We do NOT subject these SKILL.md files to the `writing-skills`
+RED-GREEN-REFACTOR pressure-testing loop. They are invocation-driven
+(user types the slash command); they don't enforce a discipline that
+needs to resist rationalization. The frontmatter `description` is
+the load-bearing part, and that's small enough to verify by review.
+
 ### Task 0: Verify clean working state and git config
 
 **Files:** none modified.
@@ -2677,16 +2706,7 @@ git commit -m "docs(intake): add adding-providers reference"
 ````markdown
 ---
 name: pr-review-intake
-description: Pull active review threads for the current branch's PR and prepare
-  them for handoff to superpowers. Trigger ONLY when the user explicitly invokes
-  it — by slash command (/pr-review-intake), by name ("run pr-review-intake",
-  "use teampowers pr-review-intake"), or by a clear and specific instruction to
-  fetch the current PR's review comments ("pull the open review threads from
-  Azure DevOps for this branch"). Do NOT auto-trigger on general talk about
-  PRs, reviews, or comments — even if it sounds related. If the user is
-  discussing review feedback abstractly, ask whether they want to run the skill
-  before invoking it. Supports Azure DevOps fully and GitHub read-only in v1;
-  if the provider is unsupported, say so and stop.
+description: Use when the user explicitly invokes /pr-review-intake, asks the skill by name, or gives a clear and specific instruction to fetch the current PR's open review comments (e.g. "pull the open review threads for this branch", "show me unaddressed AzDO review comments"). Do NOT trigger on general talk about PRs, reviews, or comments. Supports Azure DevOps fully and GitHub read-only in v1.
 ---
 
 # pr-review-intake
@@ -2700,11 +2720,13 @@ does not auto-invoke any other skill.** All cognition is delegated.
 
 ## When to use
 
-- User typed `/pr-review-intake` or asked you by name.
+- User typed `/pr-review-intake` or asked the skill by name.
 - User explicitly asked for the current PR's open review comments.
 
-**Do NOT trigger** on general talk about reviews, comments, or PRs — even
-if the conversation sounds related. If unsure, ask first.
+**Do NOT trigger** on general talk about reviews, comments, or PRs —
+even if the conversation sounds related. If the user is discussing
+review feedback abstractly, ask whether they want to run the skill
+before invoking it.
 
 ## Steps
 
@@ -3742,15 +3764,7 @@ git commit -m "docs(update): add reply-templates reference"
 ````markdown
 ---
 name: pr-review-update
-description: Mark a single PR review thread as pending after the agent has
-  addressed it in code, OR mark it won't-fix with reasoning, OR post a
-  reply-only without status change. Trigger ONLY on explicit invocation —
-  slash command (/pr-review-update), by name, or a clear specific instruction
-  ("mark thread azdo:9876 as pending", "post my fix for thread X", "mark
-  thread Y won't-fix"). Do NOT auto-trigger when the agent finishes
-  implementing a fix; wait for the user (or the agent acting on prior user
-  instruction) to ask. Verifies real git evidence before posting --action
-  pending. Supports Azure DevOps in v1; GitHub write-side is deferred to v1.1.
+description: Use when the user explicitly invokes /pr-review-update or names a specific PR review thread to update (e.g. "mark thread azdo:9876 as pending", "post my fix for thread X", "mark thread Y won't-fix"). Do NOT trigger automatically after implementing a fix — wait for an explicit ask. Azure DevOps in v1; GitHub write-side deferred.
 ---
 
 # pr-review-update
@@ -3765,7 +3779,10 @@ status. Verifies real git evidence before posting `--action pending`.
   won't-fix, or to post a reply.
 
 **Do NOT auto-trigger** when you finish implementing a fix. Wait for an
-explicit ask.
+explicit ask. The hard rule: a fix being implemented in code does NOT
+imply the user wants the thread updated — they may have a batch
+workflow, may want to inspect first, or may want to update via a
+different channel.
 
 ## Invocation
 

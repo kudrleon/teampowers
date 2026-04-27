@@ -26,8 +26,9 @@ if [[ -z "$remote_url" ]]; then
 fi
 
 # Strip a trailing .git so downstream regexes don't have to handle it.
-# (POSIX ERE used by bash =~ does not support non-greedy quantifiers;
-# normalising up front keeps the patterns simple and portable.)
+# (POSIX ERE used by bash =~ does not support non-greedy quantifiers like
+# +? or *?; macOS bash 3.2 in particular silently mismatches them. Strip
+# up front and the patterns can use plain `[^/]+`.)
 remote_url="${remote_url%.git}"
 
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
@@ -51,8 +52,9 @@ elif [[ "$remote_url" =~ ^git@ssh\.dev\.azure\.com:v3/([^/]+)/([^/]+)/([^/]+)$ ]
   project="${BASH_REMATCH[2]}"
   repo="${BASH_REMATCH[3]}"
 # --- GitHub ---
-# https://github.com/<owner>/<repo>(.git)?
-# git@github.com:<owner>/<repo>(.git)?
+# https://github.com/<owner>/<repo>
+# git@github.com:<owner>/<repo>
+# (trailing .git was stripped above)
 elif [[ "$remote_url" =~ ^https://github\.com/([^/]+/[^/]+)$ ]]; then
   provider="github"
   repo="${BASH_REMATCH[1]}"

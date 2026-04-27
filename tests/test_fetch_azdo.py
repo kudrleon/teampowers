@@ -100,3 +100,69 @@ def test_fetch_azdo_replies_are_oldest_first(fake_workspace, monkeypatch):
     assert t["first_comment"]["author"] == "alice"
     assert len(t["replies"]) == 1
     assert t["replies"][0]["author"] == "leo"
+
+
+def test_fetch_azdo_skips_deleted_and_empty_comment_threads(fake_workspace, monkeypatch):
+    """Deleted threads and threads with no comments are silently dropped."""
+    monkeypatch.chdir(fake_workspace)
+    from fetch_azdo import fetch
+    raw = {
+        "value": [
+            # Deleted thread — should be dropped.
+            {
+                "id": 1001,
+                "isDeleted": True,
+                "status": "active",
+                "threadContext": {
+                    "filePath": "/src/auth.ts",
+                    "rightFileStart": {"line": 10, "offset": 1},
+                },
+                "pullRequestThreadContext": {"trackingCriteria": {"origLine": 10}},
+                "comments": [
+                    {"id": 1, "parentCommentId": 0,
+                     "author": {"displayName": "alice", "uniqueName": "alice@example.com"},
+                     "publishedDate": "2026-04-22T14:30:00Z",
+                     "content": "deleted comment",
+                     "commentType": "text"},
+                ],
+                "_links": {"self": {"href": "https://x"}},
+            },
+            # Thread with no comments — should be dropped.
+            {
+                "id": 1002,
+                "isDeleted": False,
+                "status": "active",
+                "threadContext": {
+                    "filePath": "/src/auth.ts",
+                    "rightFileStart": {"line": 20, "offset": 1},
+                },
+                "pullRequestThreadContext": {"trackingCriteria": {"origLine": 20}},
+                "comments": [],
+                "_links": {"self": {"href": "https://x"}},
+            },
+            # Normal thread — should be kept.
+            {
+                "id": 1003,
+                "isDeleted": False,
+                "status": "active",
+                "publishedDate": "2026-04-22T14:30:00Z",
+                "threadContext": {
+                    "filePath": "/src/auth.ts",
+                    "rightFileStart": {"line": 30, "offset": 1},
+                },
+                "pullRequestThreadContext": {"trackingCriteria": {"origLine": 30}},
+                "comments": [
+                    {"id": 1, "parentCommentId": 0,
+                     "author": {"displayName": "alice", "uniqueName": "alice@example.com"},
+                     "publishedDate": "2026-04-22T14:30:00Z",
+                     "content": "kept comment",
+                     "commentType": "text"},
+                ],
+                "_links": {"self": {"href": "https://x"}},
+            },
+        ],
+    }
+    with patch("fetch_azdo._call_azdo_api", return_value=raw):
+        threads = fetch(org="example", project="proj", repo="repo", pr=1234)
+    ids = [t["id"] for t in threads]
+    assert ids == ["azdo:1003"]  # only the normal thread survives

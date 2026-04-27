@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "teampowers normalized review thread",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id", "provider", "url", "status",
+      "file", "line", "original_line", "anchor_lost",
+      "first_comment", "replies",
+      "is_bot", "is_outdated", "raw_status"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id":            { "type": "string", "pattern": "^(azdo|github|gitlab|bitbucket):.+$" },
+      "provider":      { "enum": ["azdo", "github", "gitlab", "bitbucket"] },
+      "url":           { "type": "string", "format": "uri" },
+      "status":        { "enum": ["active", "pending", "resolved"] },
+      "file":          { "type": "string", "minLength": 1 },
+      "line":          { "type": "integer", "minimum": 0 },
+      "original_line": { "type": "integer", "minimum": 0 },
+      "anchor_lost":   { "type": "boolean" },
+      "is_bot":        { "type": "boolean" },
+      "is_outdated":   { "type": "boolean" },
+      "raw_status":    { "type": "string" },
+      "first_comment": { "$ref": "#/$defs/comment" },
+      "replies": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/comment" }
+      }
+    }
+  },
+  "$defs": {
+    "comment": {
+      "type": "object",
+      "required": ["author", "created_at", "body"],
+      "additionalProperties": false,
+      "properties": {
+        "author":     { "type": "string", "minLength": 1 },
+        "created_at": { "type": "string", "format": "date-time" },
+        "body":       { "type": "string" }
+      }
+    }
+  }
+}

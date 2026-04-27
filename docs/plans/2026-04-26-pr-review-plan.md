@@ -3839,7 +3839,7 @@ different channel.
 
 3. **Verify git evidence** (only if `--action pending`). Run:
    ```bash
-   python3 ../pr-review-update/scripts/verify_git_evidence.py \
+   python3 scripts/verify_git_evidence.py \
      --file <thread.file> \
      --original-line <thread.original_line> \
      --first-comment-iso <thread.first_comment.created_at> \

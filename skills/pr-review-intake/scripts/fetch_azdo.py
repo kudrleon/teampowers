@@ -97,7 +97,7 @@ def _is_pr_level(t: dict) -> bool:
     return not ctx.get("filePath")
 
 
-def _normalize_thread(org: str, project: str, repo: str, pr: int, t: dict, repo_root: Path) -> dict:
+def _normalize_thread(org: str, project: str, repo: str, pr: int, t: dict, repo_root: Path) -> dict | None:
     raw_status = t.get("status", "unknown")
     ctx = t["threadContext"]
     file_path = ctx["filePath"].lstrip("/")  # AzDO prefixes with "/"
@@ -109,7 +109,7 @@ def _normalize_thread(org: str, project: str, repo: str, pr: int, t: dict, repo_
     comments = t.get("comments", [])
     if not comments:
         # AzDO occasionally returns deleted/empty threads. Skip silently.
-        return None  # type: ignore[return-value]
+        return None
 
     first = comments[0]
     replies = comments[1:]

@@ -2418,6 +2418,12 @@ if [[ -z "$remote_url" ]]; then
     "Add a git remote pointing to GitHub or Azure DevOps."
 fi
 
+# Strip a trailing .git so downstream regexes don't have to handle it.
+# (POSIX ERE used by bash =~ does not support non-greedy quantifiers like
+# +? or *?; macOS bash 3.2 in particular silently mismatches them. Strip
+# up front and the patterns can use plain `[^/]+`.)
+remote_url="${remote_url%.git}"
+
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
 
 provider=""
@@ -2428,23 +2434,24 @@ repo=""
 # --- Azure DevOps ---
 # https://dev.azure.com/<org>/<project>/_git/<repo>
 # git@ssh.dev.azure.com:v3/<org>/<project>/<repo>
-if [[ "$remote_url" =~ ^https://dev\.azure\.com/([^/]+)/([^/]+)/_git/([^/.]+)(\.git)?$ ]]; then
+if [[ "$remote_url" =~ ^https://dev\.azure\.com/([^/]+)/([^/]+)/_git/([^/]+)$ ]]; then
   provider="azdo"
   org="${BASH_REMATCH[1]}"
   project="${BASH_REMATCH[2]}"
   repo="${BASH_REMATCH[3]}"
-elif [[ "$remote_url" =~ ^git@ssh\.dev\.azure\.com:v3/([^/]+)/([^/]+)/([^/.]+)(\.git)?$ ]]; then
+elif [[ "$remote_url" =~ ^git@ssh\.dev\.azure\.com:v3/([^/]+)/([^/]+)/([^/]+)$ ]]; then
   provider="azdo"
   org="${BASH_REMATCH[1]}"
   project="${BASH_REMATCH[2]}"
   repo="${BASH_REMATCH[3]}"
 # --- GitHub ---
-# https://github.com/<owner>/<repo>(.git)?
-# git@github.com:<owner>/<repo>(.git)?
-elif [[ "$remote_url" =~ ^https://github\.com/([^/]+/[^/]+?)(\.git)?$ ]]; then
+# https://github.com/<owner>/<repo>
+# git@github.com:<owner>/<repo>
+# (trailing .git was stripped above)
+elif [[ "$remote_url" =~ ^https://github\.com/([^/]+/[^/]+)$ ]]; then
   provider="github"
   repo="${BASH_REMATCH[1]}"
-elif [[ "$remote_url" =~ ^git@github\.com:([^/]+/[^/]+?)(\.git)?$ ]]; then
+elif [[ "$remote_url" =~ ^git@github\.com:([^/]+/[^/]+)$ ]]; then
   provider="github"
   repo="${BASH_REMATCH[1]}"
 else

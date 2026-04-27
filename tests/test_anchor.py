@@ -1,5 +1,4 @@
 """Tests for _anchor.is_anchor_lost."""
-import os
 from pathlib import Path
 
 import pytest
@@ -37,3 +36,13 @@ def test_anchor_present_when_line_is_zero():
     # comments are excluded by fetchers, but defensively: line 0 in any
     # existing file is treated as present.
     pass  # behavior unspecified — see spec §4.5; not tested here.
+
+
+def test_file_without_trailing_newline_counts_correctly(tmp_path: Path):
+    # `"a\nb\nc"` (no trailing newline) is a 3-line file. The iterator
+    # over a binary file handle yields the final newline-less fragment,
+    # so sum() counts it correctly; line 3 is present, line 4 is not.
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "no_trailing.ts").write_text("a\nb\nc")  # 3 lines, no \n
+    assert is_anchor_lost(tmp_path, "src/no_trailing.ts", original_line=3) is False
+    assert is_anchor_lost(tmp_path, "src/no_trailing.ts", original_line=4) is True

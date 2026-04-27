@@ -14,9 +14,9 @@ def is_anchor_lost(repo_root: Path, file: str, original_line: int) -> bool:
     p = repo_root / file
     if not p.is_file():
         return True
-    # Count lines without slurping the whole file; small files only matter here.
+    # Count lines. Iterating a binary file yields each line including the
+    # trailing newline; a final fragment without a newline is still yielded
+    # as the last line, so this counts both forms correctly.
     with p.open("rb") as f:
-        # Add 1 for the trailing newline-or-not; we treat the file as having
-        # max(line_count, last-non-empty-line-index) lines.
         lines = sum(1 for _ in f)
     return original_line > lines

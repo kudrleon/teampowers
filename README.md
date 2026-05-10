@@ -48,6 +48,14 @@ $ /pr-review-update --thread azdo:9876 \
   → verifies git evidence, posts reply, flips status to pending
 ```
 
+**Note on line drift.** Threads are anchored on the comment's *original*
+line; the verifier tolerates small drift (±5 lines) automatically. For
+larger drift — refactors, file rewrites, deleted lines — `pr-review-update
+--action pending` will warn. Re-run with `--force-line-unchanged` and a
+`--summary` that explains where the fix moved. Re-running
+`/pr-review-intake` refreshes the report but does not loosen the verifier
+— that's intentional.
+
 The full design and rationale lives in
 `docs/specs/2026-04-26-pr-review-design.md`. The implementation plan
 that built this v1 is in `docs/plans/2026-04-26-pr-review-plan.md`.

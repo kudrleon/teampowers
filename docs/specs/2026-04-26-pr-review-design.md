@@ -455,11 +455,17 @@ unsure) is repeated in the SKILL body, not the frontmatter.
      }
      ```
 
-4. **Persist.** Write the filter output to
-   `./docs/pr/<pr_number>-active.json` (create directory if needed). This
-   is the contract for downstream skills.
+4. **Persist.** Merge the context JSON from step 1 (under key
+   `"context"`, with `provider`, `provider_display`, `branch`,
+   `pr_number`, `pr_url`; AzDO additionally has `org`, `project`, `repo`)
+   into the filter output, then write to
+   `./docs/pr/<pr_number>-active.json` (create directory if needed). The
+   persisted shape is `{active, counts, context}`. This is the contract
+   for downstream skills (notably `pr-review-update` resolves PR
+   coordinates from `context` so it does not have to re-detect — see
+   §6.5 step 1).
 
-5. **Report.** Run `python3 scripts/render_report.py < <filter-output>`.
+5. **Report.** Run `python3 scripts/render_report.py < <persisted-json>`.
    It writes the markdown report to stdout. Print to the conversation.
    Format example in §5.4.
 
@@ -600,10 +606,18 @@ auto-trigger after a fix" rule is in the description because it's a
 
 ### 6.5 Process flow
 
-1. **Resolve the thread.** Read `./docs/pr/<pr>-active.json` to find the
-   entry matching `--thread`. If file is missing or thread not found, ask
-   the agent to re-run `pr-review-intake` first. (Future improvement: also
-   accept a `--metadata-file` arg for callers that have their own JSON.)
+1. **Resolve the thread and PR coordinates.** Read
+   `./docs/pr/<pr>-active.json` (the persisted handoff from
+   `pr-review-intake`, see §5.3 step 4). Two pieces come from the file:
+   - The `active[]` entry matching `--thread` (provides
+     `file`, `original_line`, `first_comment.created_at`, etc.).
+   - The `context` block (provides `provider`, and the AzDO `org`,
+     `project`, `repo`, `pr_number` needed to address the AzDO API).
+   If the file is missing or the thread isn't in it, ask the agent to
+   re-run `pr-review-intake` first. The script does NOT re-detect PR
+   coordinates from the working tree; the context block is intake's
+   snapshot at the time it ran (matters when the agent has switched
+   branches between intake and update — see spec §11 risk row).
 
 2. **Sanity-check the thread's current status** by re-fetching it from
    the provider. If thread's current normalized status is `pending` or

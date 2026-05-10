@@ -46,16 +46,31 @@ before invoking it.
    `python3 scripts/filter_active.py < <fetcher-output>`.
    Stdout is `{"active": [...], "counts": {...}}`.
 
-4. **Persist.** Write the filter output to
-   `./docs/pr/<pr_number>-active.json` (mkdir if needed). This is the
-   contract for `pr-review-update`. Never inline or skip this step.
+4. **Merge context and persist.** Build the persisted shape by adding
+   a `"context"` block to the filter output:
+   ```json
+   {
+     "active": [...],
+     "counts": {...},
+     "context": {
+       "provider":         "azdo" | "github",
+       "provider_display": "Azure DevOps" | "GitHub",
+       "branch":           "<from step 1>",
+       "pr_number":        <int>,
+       "pr_url":           "<from step 1>",
+       "org":     "<azdo only>",
+       "project": "<azdo only>",
+       "repo":    "<azdo only>"
+     }
+   }
+   ```
+   Write to `./docs/pr/<pr_number>-active.json` (mkdir if needed). This
+   is the contract for `pr-review-update` (it reads PR coordinates from
+   `context` rather than re-detecting). Never inline or skip this step.
 
-5. **Render the report.** Build the `render_report.py` payload by
-   merging the filter output with the context JSON from step 1 (under
-   key `"context"`, with fields `provider`, `provider_display` —
-   "Azure DevOps" or "GitHub" — `branch`, `pr_number`, `pr_url`).
-   Then: `python3 scripts/render_report.py < payload.json`. Print the
-   markdown to the conversation.
+5. **Render the report.** Run
+   `python3 scripts/render_report.py < ./docs/pr/<pr_number>-active.json`.
+   Print the markdown to the conversation.
 
 6. **Hand off.** End with the next-step block already in the report.
    **DO NOT auto-invoke** any other skill.

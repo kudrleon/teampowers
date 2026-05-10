@@ -1,0 +1,9 @@
+{
+  "name": "teampowers",
+  "version": "0.1.0",
+  "description": "Team workflow companion for superpowers. Handles I/O with team systems (PRs, branches, review state).",
+  "author": {
+    "name": "Leo",
+    "email": "kudrleon@gmail.com"
+  }
+}

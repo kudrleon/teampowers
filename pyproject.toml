@@ -1,0 +1,20 @@
+[project]
+name = "teampowers-dev"
+version = "0.0.0"
+description = "Development tooling for the teampowers Claude Code plugin (not packaged or published)."
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0",
+  "responses>=0.25",
+  "jsonschema>=4.21",
+  "requests>=2.31",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [
+  "skills/pr-review-intake/scripts",
+  "skills/pr-review-update/scripts",
+]

@@ -1,0 +1,92 @@
+{
+  "data": {
+    "repository": {
+      "pullRequest": {
+        "url": "https://github.com/example/repo/pull/1234",
+        "headRefName": "feature/auth-refactor",
+        "reviewThreads": {
+          "nodes": [
+            {
+              "id": "PRT_kwDOA1",
+              "isResolved": false,
+              "isOutdated": false,
+              "path": "src/auth.ts",
+              "line": 42,
+              "originalLine": 40,
+              "comments": {
+                "nodes": [
+                  {
+                    "author": { "login": "alice" },
+                    "createdAt": "2026-04-22T14:30:00Z",
+                    "body": "This should handle null values — what if user.session is undefined?",
+                    "url": "https://github.com/example/repo/pull/1234#discussion_r1"
+                  },
+                  {
+                    "author": { "login": "leo" },
+                    "createdAt": "2026-04-22T15:10:00Z",
+                    "body": "Good point, what about session being undefined?",
+                    "url": "https://github.com/example/repo/pull/1234#discussion_r2"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "PRT_kwDOA2",
+              "isResolved": false,
+              "isOutdated": true,
+              "path": "src/handlers/login.ts",
+              "line": 118,
+              "originalLine": 118,
+              "comments": {
+                "nodes": [
+                  {
+                    "author": { "login": "bob" },
+                    "createdAt": "2026-04-23T09:12:00Z",
+                    "body": "Why are we re-throwing here?",
+                    "url": "https://github.com/example/repo/pull/1234#discussion_r3"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "PRT_kwDOA3",
+              "isResolved": false,
+              "isOutdated": false,
+              "path": "src/utils/parse.ts",
+              "line": 14,
+              "originalLine": 14,
+              "comments": {
+                "nodes": [
+                  {
+                    "author": { "login": "dependabot[bot]" },
+                    "createdAt": "2026-04-24T03:01:00Z",
+                    "body": "Vulnerable dep flagged.",
+                    "url": "https://github.com/example/repo/pull/1234#discussion_r4"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "PRT_kwDOA4",
+              "isResolved": true,
+              "isOutdated": false,
+              "path": "src/utils/parse.ts",
+              "line": 45,
+              "originalLine": 45,
+              "comments": {
+                "nodes": [
+                  {
+                    "author": { "login": "alice" },
+                    "createdAt": "2026-04-22T11:30:00Z",
+                    "body": "Typo in the docstring.",
+                    "url": "https://github.com/example/repo/pull/1234#discussion_r5"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

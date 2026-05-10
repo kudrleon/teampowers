@@ -1,0 +1,157 @@
+{
+  "value": [
+    {
+      "id": 9876,
+      "status": "active",
+      "isDeleted": false,
+      "lastUpdatedDate": "2026-04-22T15:10:00Z",
+      "publishedDate": "2026-04-22T14:30:00Z",
+      "threadContext": {
+        "filePath": "/src/auth.ts",
+        "rightFileStart": { "line": 42, "offset": 1 },
+        "rightFileEnd": { "line": 42, "offset": 1 }
+      },
+      "pullRequestThreadContext": {
+        "trackingCriteria": {
+          "origLine": 40
+        }
+      },
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "alice", "uniqueName": "alice@example.com" },
+          "publishedDate": "2026-04-22T14:30:00Z",
+          "content": "This should handle null values — what if user.session is undefined?",
+          "commentType": "text"
+        },
+        {
+          "id": 2,
+          "parentCommentId": 1,
+          "author": { "displayName": "leo", "uniqueName": "leo@example.com" },
+          "publishedDate": "2026-04-22T15:10:00Z",
+          "content": "Good point, what about session being undefined?",
+          "commentType": "text"
+        }
+      ],
+      "_links": {
+        "self": {
+          "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9876"
+        }
+      }
+    },
+    {
+      "id": 9881,
+      "status": "active",
+      "isDeleted": false,
+      "publishedDate": "2026-04-23T09:12:00Z",
+      "threadContext": {
+        "filePath": "/src/handlers/login.ts",
+        "rightFileStart": { "line": 118, "offset": 1 },
+        "rightFileEnd": { "line": 118, "offset": 1 }
+      },
+      "pullRequestThreadContext": {
+        "trackingCriteria": { "origLine": 118 }
+      },
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "bob", "uniqueName": "bob@example.com" },
+          "publishedDate": "2026-04-23T09:12:00Z",
+          "content": "Why are we re-throwing here?",
+          "commentType": "text"
+        }
+      ],
+      "_links": { "self": { "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9881" } }
+    },
+    {
+      "id": 9890,
+      "status": "active",
+      "isDeleted": false,
+      "publishedDate": "2026-04-24T03:01:00Z",
+      "threadContext": {
+        "filePath": "/src/utils/parse.ts",
+        "rightFileStart": { "line": 14, "offset": 1 },
+        "rightFileEnd": { "line": 14, "offset": 1 }
+      },
+      "pullRequestThreadContext": { "trackingCriteria": { "origLine": 14 } },
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "dependabot[bot]", "uniqueName": "dependabot[bot]" },
+          "publishedDate": "2026-04-24T03:01:00Z",
+          "content": "Vulnerable dep flagged.",
+          "commentType": "text"
+        }
+      ],
+      "_links": { "self": { "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9890" } }
+    },
+    {
+      "id": 9891,
+      "status": "pending",
+      "isDeleted": false,
+      "publishedDate": "2026-04-22T11:00:00Z",
+      "threadContext": {
+        "filePath": "/src/utils/parse.ts",
+        "rightFileStart": { "line": 30, "offset": 1 },
+        "rightFileEnd": { "line": 30, "offset": 1 }
+      },
+      "pullRequestThreadContext": { "trackingCriteria": { "origLine": 30 } },
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "alice", "uniqueName": "alice@example.com" },
+          "publishedDate": "2026-04-22T11:00:00Z",
+          "content": "Add a comment explaining why.",
+          "commentType": "text"
+        }
+      ],
+      "_links": { "self": { "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9891" } }
+    },
+    {
+      "id": 9892,
+      "status": "fixed",
+      "isDeleted": false,
+      "publishedDate": "2026-04-22T11:30:00Z",
+      "threadContext": {
+        "filePath": "/src/utils/parse.ts",
+        "rightFileStart": { "line": 45, "offset": 1 },
+        "rightFileEnd": { "line": 45, "offset": 1 }
+      },
+      "pullRequestThreadContext": { "trackingCriteria": { "origLine": 45 } },
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "alice", "uniqueName": "alice@example.com" },
+          "publishedDate": "2026-04-22T11:30:00Z",
+          "content": "Typo in the docstring.",
+          "commentType": "text"
+        }
+      ],
+      "_links": { "self": { "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9892" } }
+    },
+    {
+      "id": 9999,
+      "status": "active",
+      "isDeleted": false,
+      "publishedDate": "2026-04-25T08:00:00Z",
+      "threadContext": null,
+      "comments": [
+        {
+          "id": 1,
+          "parentCommentId": 0,
+          "author": { "displayName": "alice", "uniqueName": "alice@example.com" },
+          "publishedDate": "2026-04-25T08:00:00Z",
+          "content": "General PR-level comment.",
+          "commentType": "text"
+        }
+      ],
+      "_links": { "self": { "href": "https://dev.azure.com/example/proj/_apis/git/repositories/repo/pullRequests/1234/threads/9999" } }
+    }
+  ],
+  "count": 6
+}
